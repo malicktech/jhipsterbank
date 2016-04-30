@@ -126,7 +126,6 @@
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-hibernate4</artifactId>
-            <version>${jackson.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
@@ -170,6 +169,8 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        
+        <!-- LIQUIBASE - for Database Versionning  -->
         <dependency>
             <groupId>com.mattbertolini</groupId>
             <artifactId>liquibase-slf4j</artifactId>
@@ -245,7 +246,7 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-ehcache</artifactId>
-            <version>${hibernate.version}</version>
+<!--             <version>${hibernate.version}</version> -->
             <exclusions>
                 <exclusion>
                     <groupId>net.sf.ehcache</groupId>
@@ -276,6 +277,9 @@
             <artifactId>mapstruct-jdk8</artifactId>
             <version>${mapstruct.version}</version>
         </dependency>
+        
+        <!-- SPRING DEPENDENCIES -->
+        
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context-support</artifactId>
@@ -353,19 +357,27 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-localconfig-connector</artifactId>
         </dependency>
+        
         <!-- security -->
+        
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-data</artifactId>
         </dependency>
+        
         <!-- reporting -->
+        
         <dependency>
             <groupId>fr.ippon.spark.metrics</groupId>
             <artifactId>metrics-spark-reporter</artifactId>
             <version>${metrics-spark-reporter.version}</version>
         </dependency>
+        
         <!-- jhipster-needle-maven-add-dependency -->
+        
     </dependencies>
+    
+    
     <build>
         <defaultGoal>spring-boot:run</defaultGoal>
         <resources>
@@ -433,14 +445,14 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
                 <version>${maven-enforcer-plugin.version}</version>
-                <executions>
-                    <execution>
-                        <id>enforce-versions</id>
-                        <goals>
-                            <goal>enforce</goal>
-                        </goals>
-                    </execution>
-                </executions>
+				<!-- <executions> -->
+				<!-- <execution> -->
+				<!-- <id>enforce-versions</id> -->
+				<!-- <goals> -->
+				<!-- <goal>enforce</goal> -->
+				<!-- </goals> -->
+				<!-- </execution> -->
+				<!-- </executions> -->
                 <configuration>
                     <rules>
                         <requireMavenVersion>
