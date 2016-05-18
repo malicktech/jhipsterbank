@@ -18,6 +18,11 @@ import java.util.stream.Collectors;
 
 /**
  * Authenticate a user from the database.
+ * 
+ * implement a custom UserDetailsService and use Spring Data JPA repositories to load User details
+ * 
+ * @author Malick
+ * 
  */
 @Component("userDetailsService")
 public class UserDetailsService implements org.springframework.security.core.userdetails.UserDetailsService {

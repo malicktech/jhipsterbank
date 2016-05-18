@@ -104,6 +104,7 @@ public class DatabaseConfiguration {
         return liquibase;
     }
 
+    /* Hibernate4Module to  add in MappingJackson2HttpMessageConverter  to Avoid Jackson serialization on non fetched lazy objects */
     @Bean
     public Hibernate4Module hibernate4Module() {
         return new Hibernate4Module();
