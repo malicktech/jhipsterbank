@@ -4,14 +4,15 @@ import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.servlet.InstrumentedFilter;
 import com.codahale.metrics.servlets.MetricsServlet;
 import net.webapp.jhipsterbank.web.filter.CachingHttpHeadersFilter;
-import net.webapp.jhipsterbank.web.filter.StaticResourcesProductionFilter;
+
+import org.apache.catalina.webresources.StandardRoot;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.embedded.ConfigurableEmbeddedServletContainer;
-import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
-import org.springframework.boot.context.embedded.MimeMappings;
-import org.springframework.boot.context.embedded.ServletContextInitializer;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.embedded.*;
+import org.springframework.boot.context.embedded.tomcat.*;
+import org.springframework.boot.web.servlet.ServletContextInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
@@ -19,6 +20,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
+import java.io.File;
+import java.nio.file.Paths;
 import java.util.*;
 import javax.inject.Inject;
 import javax.servlet.*;
@@ -35,27 +38,26 @@ public class WebConfigurer implements ServletContextInitializer, EmbeddedServlet
     private Environment env;
 
     @Inject
-    private JHipsterProperties props;
+    private JHipsterProperties jHipsterProperties;
 
     @Autowired(required = false)
     private MetricRegistry metricRegistry;
 
     @Override
     public void onStartup(ServletContext servletContext) throws ServletException {
-        log.info("Web application configuration, using profiles: {}", Arrays.toString(env.getActiveProfiles()));
-        EnumSet<DispatcherType> disps = EnumSet.of(DispatcherType.REQUEST, DispatcherType.FORWARD, DispatcherType.ASYNC);
-        if (!env.acceptsProfiles(Constants.SPRING_PROFILE_FAST)) {
-            initMetrics(servletContext, disps);
+        if (env.getActiveProfiles().length != 0) {
+            log.info("Web application configuration, using profiles: {}", Arrays.toString(env.getActiveProfiles()));
         }
+        EnumSet<DispatcherType> disps = EnumSet.of(DispatcherType.REQUEST, DispatcherType.FORWARD, DispatcherType.ASYNC);
+        initMetrics(servletContext, disps);
         if (env.acceptsProfiles(Constants.SPRING_PROFILE_PRODUCTION)) {
             initCachingHttpHeadersFilter(servletContext, disps);
-            initStaticResourcesProductionFilter(servletContext, disps);
         }
         log.info("Web application fully configured");
     }
 
     /**
-     * Set up Mime types.
+     * Customize the Tomcat engine: Mime types, the document root, the cache.
      */
     @Override
     public void customize(ConfigurableEmbeddedServletContainer container) {
@@ -65,24 +67,52 @@ public class WebConfigurer implements ServletContextInitializer, EmbeddedServlet
         // CloudFoundry issue, see https://github.com/cloudfoundry/gorouter/issues/64
         mappings.add("json", "text/html;charset=utf-8");
         container.setMimeMappings(mappings);
+        customizeTomcat(container);
+        // When running in an IDE or with ./mvnw spring-boot:run, set location of the static web assets.
+        setLocationForStaticAssets(container);
     }
 
     /**
-     * Initializes the static resources production Filter.
+     * Customize Tomcat configuration.
      */
-    private void initStaticResourcesProductionFilter(ServletContext servletContext,
-                                                     EnumSet<DispatcherType> disps) {
+    private void customizeTomcat(ConfigurableEmbeddedServletContainer container) {
+        if (container instanceof TomcatEmbeddedServletContainerFactory) {
+            TomcatEmbeddedServletContainerFactory tomcatFactory = (TomcatEmbeddedServletContainerFactory) container;
+            tomcatFactory.addContextCustomizers((TomcatContextCustomizer) context -> {
+                // See https://github.com/jhipster/generator-jhipster/issues/3995
+                StandardRoot resources = new StandardRoot();
+                resources.setCacheMaxSize(40960);
+                resources.setCacheObjectMaxSize(2048);
+                context.setResources(resources);
+            });
+        }
+    }
 
-        log.debug("Registering static resources production Filter");
-        FilterRegistration.Dynamic staticResourcesProductionFilter =
-            servletContext.addFilter("staticResourcesProductionFilter",
-                new StaticResourcesProductionFilter());
+    private void setLocationForStaticAssets(ConfigurableEmbeddedServletContainer container) {
+        File root;
+        String prefixPath = resolvePathPrefix();
+        if (env.acceptsProfiles(Constants.SPRING_PROFILE_PRODUCTION)) {
+            root = new File(prefixPath + "target/www/");
+        } else {
+            root = new File(prefixPath + "src/main/webapp/");
+        }
+        if (root.exists() && root.isDirectory()) {
+            container.setDocumentRoot(root);
+        }
+    }
 
-        staticResourcesProductionFilter.addMappingForUrlPatterns(disps, true, "/");
-        staticResourcesProductionFilter.addMappingForUrlPatterns(disps, true, "/index.html");
-        staticResourcesProductionFilter.addMappingForUrlPatterns(disps, true, "/assets/*");
-        staticResourcesProductionFilter.addMappingForUrlPatterns(disps, true, "/scripts/*");
-        staticResourcesProductionFilter.setAsyncSupported(true);
+    /**
+     *  Resolve path prefix to static resources.
+     */
+    private String resolvePathPrefix() {
+        String fullExecutablePath = this.getClass().getResource("").getPath();
+        String rootPath = Paths.get(".").toUri().normalize().getPath();
+        String extractedPath = fullExecutablePath.replace(rootPath, "");
+        int extractionEndIndex = extractedPath.indexOf("target/");
+        if(extractionEndIndex <= 0) {
+            return "";
+        }
+        return extractedPath.substring(0, extractionEndIndex);
     }
 
     /**
@@ -93,10 +123,10 @@ public class WebConfigurer implements ServletContextInitializer, EmbeddedServlet
         log.debug("Registering Caching HTTP Headers Filter");
         FilterRegistration.Dynamic cachingHttpHeadersFilter =
             servletContext.addFilter("cachingHttpHeadersFilter",
-                new CachingHttpHeadersFilter(env));
+                new CachingHttpHeadersFilter(jHipsterProperties));
 
-        cachingHttpHeadersFilter.addMappingForUrlPatterns(disps, true, "/dist/assets/*");
-        cachingHttpHeadersFilter.addMappingForUrlPatterns(disps, true, "/dist/scripts/*");
+        cachingHttpHeadersFilter.addMappingForUrlPatterns(disps, true, "/content/*");
+        cachingHttpHeadersFilter.addMappingForUrlPatterns(disps, true, "/app/*");
         cachingHttpHeadersFilter.setAsyncSupported(true);
     }
 
@@ -121,20 +151,20 @@ public class WebConfigurer implements ServletContextInitializer, EmbeddedServlet
         ServletRegistration.Dynamic metricsAdminServlet =
             servletContext.addServlet("metricsServlet", new MetricsServlet());
 
-        metricsAdminServlet.addMapping("/metrics/metrics/*");
+        metricsAdminServlet.addMapping("/management/jhipster/metrics/*");
         metricsAdminServlet.setAsyncSupported(true);
         metricsAdminServlet.setLoadOnStartup(2);
     }
 
     @Bean
+    @ConditionalOnProperty(name = "jhipster.cors.allowed-origins")
     public CorsFilter corsFilter() {
+        log.debug("Registering CORS filter");
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        CorsConfiguration config = props.getCors();
-        if (config.getAllowedOrigins() != null && !config.getAllowedOrigins().isEmpty()) {
-            source.registerCorsConfiguration("/api/**", config);
-            source.registerCorsConfiguration("/v2/api-docs", config);
-            source.registerCorsConfiguration("/oauth/**", config);
-        }
+        CorsConfiguration config = jHipsterProperties.getCors();
+        source.registerCorsConfiguration("/api/**", config);
+        source.registerCorsConfiguration("/v2/api-docs", config);
+        source.registerCorsConfiguration("/oauth/**", config);
         return new CorsFilter(source);
     }
 }

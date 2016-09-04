@@ -1,6 +1,5 @@
 package net.webapp.jhipsterbank.security;
 
-import net.webapp.jhipsterbank.domain.Authority;
 import net.webapp.jhipsterbank.domain.User;
 import net.webapp.jhipsterbank.repository.UserRepository;
 import org.slf4j.Logger;
@@ -18,11 +17,6 @@ import java.util.stream.Collectors;
 
 /**
  * Authenticate a user from the database.
- * 
- * implement a custom UserDetailsService and use Spring Data JPA repositories to load User details
- * 
- * @author Malick
- * 
  */
 @Component("userDetailsService")
 public class UserDetailsService implements org.springframework.security.core.userdetails.UserDetailsService {
@@ -36,7 +30,7 @@ public class UserDetailsService implements org.springframework.security.core.use
     @Transactional
     public UserDetails loadUserByUsername(final String login) {
         log.debug("Authenticating {}", login);
-        String lowercaseLogin = login.toLowerCase();
+        String lowercaseLogin = login.toLowerCase(Locale.ENGLISH);
         Optional<User> userFromDatabase = userRepository.findOneByLogin(lowercaseLogin);
         return userFromDatabase.map(user -> {
             if (!user.getActivated()) {

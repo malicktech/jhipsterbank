@@ -1,6 +1,6 @@
 package net.webapp.jhipsterbank.web.rest;
 
-import net.webapp.jhipsterbank.web.rest.dto.LoggerDTO;
+import net.webapp.jhipsterbank.web.rest.vm.LoggerVM;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
@@ -17,18 +17,18 @@ import java.util.stream.Collectors;
  * Controller for view and managing Log Level at runtime.
  */
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/management/jhipster")
 public class LogsResource {
 
     @RequestMapping(value = "/logs",
         method = RequestMethod.GET,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public List<LoggerDTO> getList() {
+    public List<LoggerVM> getList() {
         LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
         return context.getLoggerList()
             .stream()
-            .map(LoggerDTO::new)
+            .map(LoggerVM::new)
             .collect(Collectors.toList());
     }
 
@@ -36,7 +36,7 @@ public class LogsResource {
         method = RequestMethod.PUT)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Timed
-    public void changeLevel(@RequestBody LoggerDTO jsonLogger) {
+    public void changeLevel(@RequestBody LoggerVM jsonLogger) {
         LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
         context.getLogger(jsonLogger.getName()).setLevel(Level.valueOf(jsonLogger.getLevel()));
     }

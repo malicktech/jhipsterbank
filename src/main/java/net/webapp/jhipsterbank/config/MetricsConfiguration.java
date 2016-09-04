@@ -1,16 +1,21 @@
 package net.webapp.jhipsterbank.config;
 
+
 import com.codahale.metrics.JmxReporter;
 import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.Slf4jReporter;
 import com.codahale.metrics.graphite.Graphite;
 import com.codahale.metrics.graphite.GraphiteReporter;
 import com.codahale.metrics.health.HealthCheckRegistry;
 import com.codahale.metrics.jvm.*;
 import com.ryantenney.metrics.spring.config.annotation.EnableMetrics;
 import com.ryantenney.metrics.spring.config.annotation.MetricsConfigurerAdapter;
+import com.zaxxer.hikari.HikariDataSource;
+
 import fr.ippon.spark.metrics.SparkReporter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.*;
 
@@ -22,7 +27,6 @@ import java.util.concurrent.TimeUnit;
 
 @Configuration
 @EnableMetrics(proxyTargetClass = true)
-@Profile("!" + Constants.SPRING_PROFILE_FAST)
 public class MetricsConfiguration extends MetricsConfigurerAdapter {
 
     private static final String PROP_METRIC_REG_JVM_MEMORY = "jvm.memory";
@@ -39,6 +43,9 @@ public class MetricsConfiguration extends MetricsConfigurerAdapter {
 
     @Inject
     private JHipsterProperties jHipsterProperties;
+
+    @Autowired(required = false)
+    private HikariDataSource hikariDataSource;
 
     @Override
     @Bean
@@ -60,16 +67,29 @@ public class MetricsConfiguration extends MetricsConfigurerAdapter {
         metricRegistry.register(PROP_METRIC_REG_JVM_THREADS, new ThreadStatesGaugeSet());
         metricRegistry.register(PROP_METRIC_REG_JVM_FILES, new FileDescriptorRatioGauge());
         metricRegistry.register(PROP_METRIC_REG_JVM_BUFFERS, new BufferPoolMetricSet(ManagementFactory.getPlatformMBeanServer()));
+        if (hikariDataSource != null) {
+            log.debug("Monitoring the datasource");
+            hikariDataSource.setMetricRegistry(metricRegistry);
+        }
         if (jHipsterProperties.getMetrics().getJmx().isEnabled()) {
             log.debug("Initializing Metrics JMX reporting");
             JmxReporter jmxReporter = JmxReporter.forRegistry(metricRegistry).build();
             jmxReporter.start();
         }
+
+        if (jHipsterProperties.getMetrics().getLogs().isEnabled()) {
+            log.info("Initializing Metrics Log reporting");
+            final Slf4jReporter reporter = Slf4jReporter.forRegistry(metricRegistry)
+                .outputTo(LoggerFactory.getLogger("metrics"))
+                .convertRatesTo(TimeUnit.SECONDS)
+                .convertDurationsTo(TimeUnit.MILLISECONDS)
+                .build();
+            reporter.start(jHipsterProperties.getMetrics().getLogs().getReportFrequency(), TimeUnit.SECONDS);
+        }
     }
 
     @Configuration
     @ConditionalOnClass(Graphite.class)
-    @Profile("!" + Constants.SPRING_PROFILE_FAST)
     public static class GraphiteRegistry {
 
         private final Logger log = LoggerFactory.getLogger(GraphiteRegistry.class);
@@ -100,7 +120,6 @@ public class MetricsConfiguration extends MetricsConfigurerAdapter {
 
     @Configuration
     @ConditionalOnClass(SparkReporter.class)
-    @Profile("!" + Constants.SPRING_PROFILE_FAST)
     public static class SparkRegistry {
 
         private final Logger log = LoggerFactory.getLogger(SparkRegistry.class);
@@ -125,4 +144,5 @@ public class MetricsConfiguration extends MetricsConfigurerAdapter {
             }
         }
     }
+
 }
