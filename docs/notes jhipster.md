@@ -14,24 +14,20 @@ project name : jhipsterbank
 - jenkinsfile
 
 # TODO
-- Upgrade JHipster to v6.8.0 (https://www.jhipster.tech/2020/03/08/jhipster-release-6.8.0.html)
-- regenerate project with jdl file
+
+- [ ] ci/cd azure
+- [ ] ci/cd aws
+- [ ] ci/cd gcp
+- [ ] test reactive, jhispterbank
+- [ ] clear bank account jdl sample
+- [ ] github action
+- [ ] JDL
+	- [X] model-1.jdl
+	- [X] model-2.jdl
 	- [ ] https://github.com/jhipster/generator-jhipster/blob/master/test-integration/samples/jdl-default/app.jdl
 	- [ ] https://github.com/jhipster/jdl-samples/blob/master/bug-tracker.jh
 	- [ ] https://github.com/jhipster/jdl-samples/blob/master/blog.jh
 	- [ ] https://github.com/jhipster/jdl-samples/blob/master/online-shop.jh
-
-- k8s sub generator
-- k8s helm sub
-- ci/cd azure
-- ci/cd aws
-- ci/cd gcp
-- test reactive, jhispterbank
-- clear bank account jdl sample
-
-- [ ] JDL
-	- [X] model-1.jdl
-	- [X] model-2.jdl
 
 # How to Upgrade 
 
@@ -42,11 +38,20 @@ project name : jhipsterbank
 
 > cd C:\devlabs\jhipster\jhipsterbank
 
-* clean dir
+* clean dir, Remove all jhipster files/directories except for custom one
 
 > rm -rf !("jdl/"|".git/"|"docs/") 
 
 
 * generate application
 
-> jhipster import-jdl app.jdl --force
+> jhipster import-jdl jdl\app.jdl --force
+
+* generate deployment
+
+
+> jhipster import-jdl jdl\deployment.jdl
+
+# TMP
+
+automatic project update to jhipster 6.8.0

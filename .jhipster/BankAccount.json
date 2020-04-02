@@ -1,36 +1,52 @@
 {
-    "relationships": [
+    "name": "BankAccount",
+    "fields": [
         {
-            "relationshipId": 1,
-            "relationshipName": "operation",
-            "otherEntityName": "operation",
-            "relationshipType": "one-to-many",
-            "otherEntityRelationshipName": "bankAccount"
+            "fieldName": "name",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
         },
         {
-            "relationshipId": 2,
-            "relationshipName": "user",
-            "otherEntityName": "user",
+            "fieldName": "balance",
+            "fieldType": "BigDecimal",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "type",
+            "fieldType": "BankAccountType",
+            "fieldValues": "CURRENT_ACCOUNT,SAVING_ACCOUNT"
+        }
+    ],
+    "relationships": [
+        {
+            "relationshipType": "one-to-many",
+            "otherEntityName": "operation",
+            "otherEntityRelationshipName": "bankAccount",
+            "relationshipName": "operations"
+        },
+        {
             "relationshipType": "many-to-one",
+            "otherEntityName": "user",
+            "otherEntityRelationshipName": "bankAccount",
+            "relationshipName": "user",
             "otherEntityField": "login"
         }
     ],
-    "fields": [
-        {
-            "fieldId": 1,
-            "fieldName": "name",
-            "fieldType": "String",
-            "fieldValidateRules": []
-        },
-        {
-            "fieldId": 2,
-            "fieldName": "balance",
-            "fieldType": "BigDecimal",
-            "fieldValidateRules": []
-        }
-    ],
-    "changelogDate": "20160126112615",
+    "changelogDate": "20200402180200",
+    "entityTableName": "bank_account",
     "dto": "no",
-    "service": "no",
-    "pagination": "pager"
+    "pagination": "pagination",
+    "service": "serviceClass",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "readOnly": false,
+    "embedded": false,
+    "clientRootFolder": "",
+    "applications": [
+        "jhipsterbank"
+    ]
 }

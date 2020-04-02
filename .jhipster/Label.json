@@ -1,24 +1,32 @@
 {
-    "relationships": [
-        {
-            "relationshipId": 1,
-            "relationshipName": "operation",
-            "otherEntityName": "operation",
-            "relationshipType": "many-to-many",
-            "ownerSide": false,
-            "otherEntityRelationshipName": "label"
-        }
-    ],
+    "name": "Label",
     "fields": [
         {
-            "fieldId": 1,
             "fieldName": "label",
-            "fieldType": "String",
-            "fieldValidateRules": []
+            "fieldType": "String"
         }
     ],
-    "changelogDate": "20160126113107",
+    "relationships": [
+        {
+            "relationshipType": "many-to-many",
+            "otherEntityName": "operation",
+            "otherEntityRelationshipName": "labels",
+            "relationshipName": "operations",
+            "otherEntityField": "id",
+            "ownerSide": false
+        }
+    ],
+    "changelogDate": "20200402180400",
+    "entityTableName": "label",
     "dto": "no",
-    "service": "no",
-    "pagination": "no"
+    "pagination": "no",
+    "service": "serviceClass",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "readOnly": false,
+    "embedded": false,
+    "clientRootFolder": "",
+    "applications": [
+        "jhipsterbank"
+    ]
 }

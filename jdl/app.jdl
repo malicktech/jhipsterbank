@@ -12,7 +12,7 @@ application {
     devDatabaseType h2Disk,
     prodDatabaseType mysql,
     enableHibernateCache true,
-    cacheProvider hazelcast,
+    cacheProvider ehcache,
     dtoSuffix DTO,
     buildTool maven,
     clientFramework angularX,
@@ -66,6 +66,6 @@ relationship ManyToMany {
 paginate BankAccount with pagination
 paginate Operation with infinite-scroll
 
-dto BankAccount with mapstruct
+//dto BankAccount, Operation with mapstruct
 
 service * with serviceClass
