@@ -1,0 +1,71 @@
+/* 
+ * https://www.jhipster.tech/jdl/
+ */
+
+application {
+  config {
+    baseName jhipsterbank,
+    applicationType monolith,
+    packageName io.github.citizendiop.jhipsterbank,
+    authenticationType jwt,
+    databaseType sql,
+    devDatabaseType h2Disk,
+    prodDatabaseType mysql,
+    enableHibernateCache true,
+    cacheProvider hazelcast,
+    dtoSuffix DTO,
+    buildTool maven,
+    clientFramework angularX,
+    clientPackageManager npm,
+    enableTranslation true,
+    nativeLanguage en
+    languages [en, fr],
+    useSass true,
+    testFrameworks [gatling, protractor],
+    jhiPrefix jhi,
+    messageBroker false,
+    websocket false
+  }
+  entities *
+}
+
+/* 
+ * Entities Model 
+ */
+
+entity BankAccount {
+	name String required
+    balance BigDecimal required
+    type BankAccountType
+}
+relationship ManyToOne {
+	BankAccount{user(login)} to User
+}
+enum BankAccountType {
+    CURRENT_ACCOUNT, SAVING_ACCOUNT
+}
+entity Operation {
+	date Instant required
+    description String 
+    amount BigDecimal required
+    type OperationType
+}
+enum OperationType {
+    WITHDRAWAL, DEPOSIT, TRANSFER	
+}
+relationship OneToMany {
+	BankAccount{operations} to Operation
+}
+entity Label {
+	label String 
+}
+relationship ManyToMany {
+	Operation{labels} to Label{operations}
+}
+
+paginate BankAccount with pagination
+paginate Operation with infinite-scroll
+
+dto BankAccount with mapstruct
+
+service * with serviceClass
