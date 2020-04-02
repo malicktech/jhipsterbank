@@ -1,0 +1,22 @@
+/* 
+ * Deployments
+ * https://www.jhipster.tech/jdl/deployments
+ */
+ 
+// will be created under 'docker-compose' folder
+deployment {
+  deploymentType docker-compose
+  // appsFolders [foo, bar]
+  dockerRepositoryName "citizendiop"
+  // monitoring prometheus
+}
+
+// will be created under 'kubernetes' folder
+deployment {
+  deploymentType kubernetes
+  // appsFolders [foo, bar]
+  dockerRepositoryName "citizendiop"
+  kubernetesNamespace default
+  kubernetesServiceType LoadBalancer
+  istio false
+}

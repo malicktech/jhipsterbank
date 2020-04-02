@@ -1,0 +1,10 @@
+{
+  "jhipsterbankApp": {
+    "OperationType": {
+      "null": "",
+      "WITHDRAWAL": "WITHDRAWAL",
+      "DEPOSIT": "DEPOSIT",
+      "TRANSFER": "TRANSFER"
+    }
+  }
+}

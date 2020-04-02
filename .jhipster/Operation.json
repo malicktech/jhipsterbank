@@ -1,30 +1,18 @@
 {
-    "relationships": [
-        {
-            "relationshipId": 1,
-            "relationshipName": "bankAccount",
-            "otherEntityName": "bankAccount",
-            "relationshipType": "many-to-one",
-            "otherEntityField": "name"
-        },
-        {
-            "relationshipId": 2,
-            "relationshipName": "label",
-            "otherEntityName": "label",
-            "relationshipType": "many-to-many",
-            "otherEntityField": "label",
-            "ownerSide": true
-        }
-    ],
+    "name": "Operation",
     "fields": [
         {
-            "fieldId": 1,
             "fieldName": "date",
-            "fieldType": "ZonedDateTime",
-            "fieldValidateRules": []
+            "fieldType": "Instant",
+            "fieldValidateRules": [
+                "required"
+            ]
         },
         {
-            "fieldId": 2,
+            "fieldName": "description",
+            "fieldType": "String"
+        },
+        {
             "fieldName": "amount",
             "fieldType": "BigDecimal",
             "fieldValidateRules": [
@@ -32,13 +20,39 @@
             ]
         },
         {
-            "fieldId": 3,
-            "fieldName": "description",
-            "fieldType": "String"
+            "fieldName": "type",
+            "fieldType": "OperationType",
+            "fieldValues": "WITHDRAWAL,DEPOSIT,TRANSFER"
         }
     ],
-    "changelogDate": "20160126113641",
+    "relationships": [
+        {
+            "relationshipType": "many-to-many",
+            "otherEntityName": "label",
+            "otherEntityRelationshipName": "operations",
+            "relationshipName": "labels",
+            "otherEntityField": "id",
+            "ownerSide": true
+        },
+        {
+            "relationshipType": "many-to-one",
+            "otherEntityName": "bankAccount",
+            "otherEntityRelationshipName": "operations",
+            "relationshipName": "bankAccount",
+            "otherEntityField": "id"
+        }
+    ],
+    "changelogDate": "20200402180300",
+    "entityTableName": "operation",
     "dto": "no",
-    "service": "no",
-    "pagination": "pager"
+    "pagination": "infinite-scroll",
+    "service": "serviceClass",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "readOnly": false,
+    "embedded": false,
+    "clientRootFolder": "",
+    "applications": [
+        "jhipsterbank"
+    ]
 }

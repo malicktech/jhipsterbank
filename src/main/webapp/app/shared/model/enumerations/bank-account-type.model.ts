@@ -1,0 +1,4 @@
+export const enum BankAccountType {
+  CURRENT_ACCOUNT = 'CURRENT_ACCOUNT',
+  SAVING_ACCOUNT = 'SAVING_ACCOUNT'
+}

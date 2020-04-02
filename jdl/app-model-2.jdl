@@ -1,0 +1,54 @@
+/*
+* relationship with the entity "user" and the field "login"  : eg : BankAccount{user(login)} to User
+*/
+entity UserInfo {
+	birthday LocalDate
+    gender String
+    address String required maxlength(200)
+    phone String pattern(/[0-9- .]+/)
+    website String
+}
+
+entity Address {
+	state String
+    city String
+    country String
+}
+
+relationship OneToOne {
+	UserInfo{user(login)} to User
+}
+entity BankAccount {
+	name String required 
+    balance BigDecimal required
+    type BankAccountType
+}
+relationship ManyToOne {
+	BankAccount{user(login)} to User{bankAccounts(name)}
+}
+enum BankAccountType {
+    CURRENT_ACCOUNT, SAVING_ACCOUNT
+}
+entity Operation {
+	date Instant required
+    description String 
+    amount BigDecimal required
+    type OperationType
+}
+enum OperationType {
+    WITHDRAWAL, DEPOSIT, TRANSFER	
+}
+relationship OneToMany {
+	BankAccount{operations} to Operation
+}
+entity Label {
+	label String required minlength(3)
+}
+relationship ManyToMany {
+	Operation{labels} to Label{operations}
+}
+
+paginate BankAccount with pagination
+paginate Operation with infinite-scroll
+service BankAccount, Operation with serviceClass
+//filter BankAccount
