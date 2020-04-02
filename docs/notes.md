@@ -14,7 +14,7 @@ project name : jhipsterbank
 - jenkinsfile
 
 # TODO
-
+- [ ] secrets Kubernetes
 - [ ] ci/cd azure
 - [ ] ci/cd aws
 - [ ] ci/cd gcp
@@ -28,6 +28,8 @@ project name : jhipsterbank
 	- [ ] https://github.com/jhipster/jdl-samples/blob/master/bug-tracker.jh
 	- [ ] https://github.com/jhipster/jdl-samples/blob/master/blog.jh
 	- [ ] https://github.com/jhipster/jdl-samples/blob/master/online-shop.jh
+
+- [ ] ci-cd: analyse code with sonar cloud/ custom sonar, reexecute jhipster cicd generator
 
 # How to Upgrade 
 
