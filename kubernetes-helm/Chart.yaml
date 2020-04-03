@@ -1,0 +1,17 @@
+name: jhipsterbank
+version: 1.0.0
+appVersion: 1.0.0
+description: jhipsterbank is a JHipster based monolith application
+icon: https://www.jhipster.tech/images/logo/logo-jhipster-drink-coffee.svg
+keywords:
+- spring
+- angular
+- react
+- JHipster
+- jhipsterbank
+home: https://www.jhipster.tech/
+sources:
+- https://github.com/jhipster/generator-jhipster.git
+maintainers:
+- name: Team JHipster
+  email:

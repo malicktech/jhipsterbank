@@ -15,7 +15,10 @@ project name : jhipsterbank
 
 # TODO
 - [ ] secrets Kubernetes
+- aks todo https://github.com/diop-malick/todo-app-java-on-azure/tree/master/deploy/aks
 - [ ] ci/cd azure
+- [-] ci-cd: GitHub Actions > only on master for publish with tag, on dev for publish with snackshop
+- [ ] ci-cd: deploy in rancher 2
 - [ ] ci/cd aws
 - [ ] ci/cd gcp
 - [ ] test reactive, jhispterbank
@@ -30,6 +33,7 @@ project name : jhipsterbank
 	- [ ] https://github.com/jhipster/jdl-samples/blob/master/online-shop.jh
 
 - [ ] ci-cd: analyse code with sonar cloud/ custom sonar, reexecute jhipster cicd generator
+
 
 # How to Upgrade 
 
@@ -51,9 +55,33 @@ project name : jhipsterbank
 
 * generate deployment
 
-
 > jhipster import-jdl jdl\deployment.jdl
+
+
+* generate kubernetes conf
+
+navigate to the root directory of your project, and create a kubernetes directory. Then run
+
+> mkdir kubernetes & cd kubernetes
+> jhipster kubernetes
+
+* generate kubernetes helm
+
+> mkdir kubernetes-helm & cd kubernetes-helm
+> jhipster kubernetes-helm
+
+* deploy with kubenetes - helm cmd terminal : 
+> sh helm-apply.sh
 
 # TMP
 
 automatic project update to jhipster 6.8.0
+
+# local kube cluster
+
+* set context to local cluster
+https://kubernetes.io/fr/docs/reference/kubectl/cheatsheet/#contexte-et-configuration-de-kubectl
+
+kubectl config get-contexts
+kubectl config use-context docker-for-desktop
+ kubectl get nodes

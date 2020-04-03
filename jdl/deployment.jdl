@@ -1,3 +1,6 @@
+// @Deprecated
+// FIXME remove
+
 /* 
  * Deployments
  * https://www.jhipster.tech/jdl/deployments
@@ -18,5 +21,5 @@ deployment {
   dockerRepositoryName "citizendiop"
   kubernetesNamespace default
   kubernetesServiceType LoadBalancer
-  istio false
+  // istio false
 }

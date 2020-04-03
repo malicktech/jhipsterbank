@@ -1,3 +1,5 @@
+// @Deprecated
+// FIXME remove
 /*
 * relationship with the entity "user" and the field "login"  : eg : BankAccount{user(login)} to User
 */
