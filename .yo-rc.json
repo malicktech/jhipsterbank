@@ -37,7 +37,17 @@
     "embeddableLaunchScript": false,
     "entitySuffix": "",
     "otherModules": [],
-    "blueprints": []
+    "blueprints": [],
+    "appsFolders": ["jhipsterbank"],
+    "directoryPath": "../",
+    "dockerRepositoryName": "citizendiop",
+    "dockerPushCommand": "docker push",
+    "kubernetesNamespace": "default",
+    "kubernetesServiceType": "LoadBalancer",
+    "kubernetesUseDynamicStorage": false,
+    "ingressDomain": "",
+    "monitoring": "no",
+    "istio": false
   },
   "entities": ["BankAccount", "Operation", "Label"]
 }

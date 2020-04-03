@@ -1,0 +1,12 @@
+commonLabels:
+  app.kubernetes.io/genereted-by: JHipster
+
+resources:
+  # Individual apps
+  - jhipsterbank/jhipsterbank-deployment.yml
+  - jhipsterbank/jhipsterbank-service.yml
+  - jhipsterbank/jhipsterbank-mysql.yml
+  - jhipsterbank/jwt-secret.yml
+# service discovery eureka/consul
+
+patchesJson6902:

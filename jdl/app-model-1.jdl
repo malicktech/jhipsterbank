@@ -1,3 +1,5 @@
+// @Deprecated
+// FIXME remove
 entity BankAccount {
 	name String required
     balance BigDecimal required
