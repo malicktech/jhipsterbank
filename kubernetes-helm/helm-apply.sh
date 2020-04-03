@@ -12,9 +12,9 @@ helm install --name csvc ./csvc --namespace default
   fi
 fi
 helm delete --purge jhipsterbank 2>/dev/null
-helm dep up ./jhipsterbank
+helm dep up ./
 if [ $helmVersion -eq 1 ]; then
-helm install jhipsterbank  ./jhipsterbank --namespace default
+helm install jhipsterbank  ./ --namespace default
 else
 helm install --name jhipsterbank  ./jhipsterbank --namespace default
 fi

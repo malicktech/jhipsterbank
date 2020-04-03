@@ -65,6 +65,14 @@ navigate to the root directory of your project, and create a kubernetes director
 > mkdir kubernetes & cd kubernetes
 > jhipster kubernetes
 
+* generate kubernetes helm
+
+> mkdir kubernetes-helm & cd kubernetes-helm
+> jhipster kubernetes-helm
+
+* deploy with kubenetes - helm cmd terminal : 
+> sh helm-apply.sh
+
 # TMP
 
 automatic project update to jhipster 6.8.0
